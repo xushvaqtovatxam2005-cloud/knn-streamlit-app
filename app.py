@@ -116,4 +116,42 @@ if file is not None:
 
 else:
     st.info("👆 Iltimos, CSV fayl yuklang")
+st.subheader("🧑‍⚕️ Yangi bemor ma’lumotini kiriting")
+
+age = st.number_input("Yosh", min_value=0, max_value=120, value=30)
+bmi = st.number_input("BMI", value=25.0)
+children = st.number_input("Bolalar soni", min_value=0, max_value=10, value=0)
+
+sex = st.selectbox("Jins", ["male", "female"])
+smoker = st.selectbox("Chekuvchi", ["yes", "no"])
+region = st.selectbox("Region", ["northwest", "northeast", "southwest", "southeast"])
+
+
+input_data = pd.DataFrame({
+    "age": [age],
+    "bmi": [bmi],
+    "children": [children],
+    "sex": [sex],
+    "smoker": [smoker],
+    "region": [region]
+})
+
+
+input_data = pd.get_dummies(input_data)
+
+# Train dagi ustunlar bilan tenglashtiramiz
+input_data = input_data.reindex(columns=X.columns, fill_value=0)
+
+
+input_scaled = scaler.transform(input_data)
+
+
+if st.button("🔍 Natijani aniqlash"):
+    prediction = model.predict(input_scaled)[0]
+
+    if prediction == 1:
+        st.error("❗ Bemor KASAL (yuqori xavf)")
+    else:
+        st.success("✅ Bemor KASAL EMAS (past xavf)")
+
 
